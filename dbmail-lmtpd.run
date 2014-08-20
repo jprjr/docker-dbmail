@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+./setup
+
+exec /usr/bin/dbmail-lmtpd -D -f /etc/dbmail-lmtpd.conf 

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+./setup
+
+exec /usr/bin/dbmail-httpd -D -f /etc/dbmail-httpd.conf -n

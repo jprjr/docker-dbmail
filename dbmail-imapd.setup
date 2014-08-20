@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Environment variables
+declare MYSQL_HOST #optional
+declare MYSQL_USER #optional
+declare MYSQL_PASS #optional
+
+declare DB_NAME
+declare DB_USER #requireed if using mysql
+declare DB_PASS #required if using mysql
+
+declare ADMIN_EMAIL
+declare ADMIN_PASS
+
+declare SKIP_DB_SETUP
+declare SKIP_DBMAIL_SETUP
+
+if [[ -f /private/vars.sh ]]; then
+    source /private/vars.sh
+fi
+
+SKIP_DBMAIL_SETUP=${SKIP_DBMAIL_SETUP:-}
+
+if [[ -z $SKIP_DBMAIL_SETUP ]]; then
+    if [[ -z $SKIP_DB_SETUP ]]; then
+        DB_NAME=${DB_NAME:-}
+        if [[ -z $DB_NAME ]]; then
+            DB_NAME=${DB_USER}
+        fi
+        # first check for MYSQL_HOST
+        MYSQL_HOST=${MYSQL_HOST:-}
+        MYSQL_NAME=${MYSQL_NAME:-}
+        if [[ -n ${MYSQL_NAME} ]]; then
+            MYSQL_HOST=mysql
+        fi
+
+        if [[ -n $MYSQL_HOST ]]; then
+            cp /opt/dbmail/dbmail.conf.mysql /etc/dbmail.conf
+            MYSQL_USER=${MYSQL_USER:-}
+            MYSQL_PASS=${MYSQL_PASS:-}
+
+            if [[ -n ${MYSQL_USER} && -n ${MYSQL_PASS} ]]; then
+                mysql -h $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "CREATE DATABASE IF NOT EXISTS $DB_USER;"
+                mysql -h $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "GRANT ALL ON $DB_USER.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+            fi
+            mysql -h $MYSQL_HOST -u$DB_USER -p$DB_PASS $DB_USER < /opt/dbmail/create_tables.mysql
+            sed -i "s/##MYSQL_HOST##/$MYSQL_HOST/g" /etc/dbmail.conf
+        fi
+
+    fi
+    
+    sed -i "s/##DB_NAME##/$DB_NAME/g" /etc/dbmail.conf
+    sed -i "s/##DB_USER##/$DB_USER/g" /etc/dbmail.conf
+    sed -i "s/##DB_PASS##/$DB_PASS/g" /etc/dbmail.conf
+
+fi

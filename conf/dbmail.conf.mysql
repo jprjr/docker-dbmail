@@ -1,0 +1,244 @@
+
+# (c) 2000-2006 IC&S, The Netherlands 
+#
+# Configuration file for DBMAIL 
+
+[DBMAIL] 
+dburi                = mysql://##DB_USER##:##DB_PASS##@##MYSQL_HOST##/##DB_USER##
+authdriver           = sql
+#max_db_connections   = 10
+table_prefix         = dbmail_   
+encoding             = utf8
+default_msg_encoding = utf8
+#postmaster           = DBMAIL-MAILER       
+sendmail              = /usr/sbin/sendmail     
+file_logging_levels       = 7
+syslog_logging_levels     = 31
+query_time_info       = 10
+query_time_notice     = 20
+query_time_warning    = 30
+query_timeout         = 300 
+# Root privs are used to open a port, then privs
+# are dropped down to the user/group specified here.
+#
+effective_user        = nobody
+effective_group       = nogroup
+
+bindip                = 0.0.0.0		# IPv4 only - all IP's
+# The maximum length of the queue of pending connections. See
+# listen(2) for more information
+#
+# backlog              = 128
+
+# 
+# Idle time allowed before a connection is shut off.
+#
+timeout               = 300             
+
+# 
+# Idle time allowed before a connection is shut off if you have not logged in yet.
+#
+login_timeout         = 60
+
+# 
+# If yes, resolves IP addresses to DNS names when logging.
+#
+resolve_ip            = no
+
+#
+# If yes, keep statistics in the authlog table for connecting users
+#
+authlog               = no
+
+# 
+# logfile for stdout messages
+#
+logfile               = /var/log/dbmail.log        
+
+# 
+# logfile for stderr messages
+#
+errorlog              = /var/log/dbmail.err        
+
+# 
+# directory for storing PID files
+#
+pid_directory         = /var/run
+
+#
+# directory for locating libraries (normally has a sane default compiled-in)
+#
+#library_directory       = /usr/lib/dbmail
+
+#
+# SSL/TLS certificates
+#
+# A file containing a list of CAs in PEM format
+tls_cafile            = 
+
+# A file containing a PEM format certificate
+tls_cert              =
+
+# A file containing a PEM format RSA or DSA key
+tls_key               =
+
+# A cipher list string in the format given in ciphers(1)
+tls_ciphers           =
+
+
+# hashing algorithm. You can select your favorite hash type
+# for generating unique ids for message parts. 
+#
+# for valid values check mhash(3) but minus the MHASH_ prefix.
+#  
+# if you ever change this value run 'dbmail-util --rehash' to 
+# update the hash for all mimeparts.
+#
+# examples: MD5, SHA1, SHA256, SHA512, TIGER, WHIRLPOOL
+#
+# hash_algorithm = SHA1
+
+
+# header_cache tuning
+#
+# set header_cache_readonly to 'yes' to prevent new
+# unknown header-names from being cached.
+#
+# header_cache_readonly = yes
+
+
+
+[LMTP]
+port                  = 24                 
+#tls_port              =
+
+
+[HTTP]
+port                  = 41380
+#
+# the httpd daemon provides full access to all users, mailboxes
+# and messages. Be very careful with this one!
+bindip                = 0.0.0.0
+admin                 = ##DB_USER##:##DB_PASS##
+
+[IMAP]
+# You can set an alternate banner to display when connecting to the service
+# banner = imap 4r1 server (dbmail 2.3.x)
+
+# 
+# Port to bind to.
+#
+port                  = 143                
+#tls_port              = 993
+
+# 
+# IMAP prefers a longer timeout than other services.
+#
+timeout               = 4000            
+
+# 
+# If yes, allows SMTP access from the host IP connecting by IMAP.
+# This requires addition configuration of your MTA
+#
+imap_before_smtp      = no     
+
+#
+# during IDLE, how many seconds between checking the mailbox
+# status (default: 30)
+#
+# idle_timeout          = 30
+
+# during IDLE, how often should the server send an '* OK' still
+# here message (default: 10)
+#
+# the time between such a message is idle_timeout * idle_interval
+# seconds
+#
+# idle_interval         = 10
+
+
+#
+# Provide a CAPABILITY to override the default
+#
+# capability 		= IMAP4 IMAP4rev1 AUTH=LOGIN ACL RIGHTS=texk NAMESPACE CHILDREN SORT QUOTA THREAD=ORDEREDSUBJECT UNSELECT IDLE
+
+# max message size. You can specify the maximum message size
+# accepted by the IMAP daemon during APPEND commands.
+#
+# Supported formats:
+#  decimal: 1000000    
+#  octal:   03777777
+#  hex:     0xfffff
+#
+# max_message_size      =
+
+
+[SIEVE]
+# 
+# Port to bind to.
+#
+port                  = 2000               
+tls_port              =
+
+
+
+[DELIVERY]
+# 
+# Run Sieve scripts as messages are delivered.
+#
+SIEVE                 = yes               
+
+# 
+# Use 'user+mailbox@domain' format to deliver to a mailbox.
+#
+SUBADDRESS            = yes          
+
+# 
+# Turn on/off the Sieve Vacation extension.
+#
+SIEVE_VACATION        = yes      
+
+# 
+# Turn on/off the Sieve Notify extension
+#
+SIEVE_NOTIFY          = yes
+
+# 
+# Turn on/off additional Sieve debugging.
+#
+SIEVE_DEBUG           = no          
+
+
+# Use the auto_notify table to send email notifications.
+#
+AUTO_NOTIFY           = no
+ 
+# 
+# Use the auto_reply table to send away messages.
+#
+AUTO_REPLY            = no
+
+# 
+# Defaults to "NEW MAIL NOTIFICATION"
+#
+#AUTO_NOTIFY_SUBJECT        =    
+
+# 
+# Defaults to POSTMASTER from the DBMAIL section.
+#
+#AUTO_NOTIFY_SENDER        =   
+
+
+# If you set this to 'yes' dbmail will check for duplicate
+# messages in the relevant mailbox during delivery using 
+# the Message-ID header
+#
+suppress_duplicates	= no
+
+#
+# Soft or hard bounce on over-quota delivery
+#
+quota_failure           = hard
+
+
+# end of configuration file
