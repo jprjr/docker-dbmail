@@ -34,3 +34,5 @@ EXPOSE 993
 EXPOSE 41380
 #EXPOSE 12345
 #EXPOSE 10026
+
+ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
