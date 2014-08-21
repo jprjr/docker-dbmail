@@ -36,3 +36,4 @@ EXPOSE 41380
 #EXPOSE 10026
 
 ENTRYPOINT ["/usr/bin/s6-svscan","/etc/s6"]
+CMD []
